@@ -1,14 +1,14 @@
 {
-  "name": "electron-quick-start-typescript",
+  "name": "electron-runs-admin",
   "version": "1.0.0",
-  "description": "A minimal Electron application written with Typescript",
+  "description": "Example app showing how to elevate admin privileges for a child process",
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "start": "npm run build && electron ./dist/main.js"
   },
-  "repository": "https://github.com/electron/electron-quick-start-typescript",
+  "repository": "https://github.com/kmturley/electron-runs-admin",
   "keywords": [
     "Electron",
     "quick",

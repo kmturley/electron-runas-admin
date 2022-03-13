@@ -5,16 +5,27 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
-document.getElementById('runProcessBtn').addEventListener('click', function(e) {
-  console.log('runProcessBtn click');
+var runProcessBtn: HTMLButtonElement = document.getElementById('runProcessBtn') as HTMLButtonElement;
+var runProcessElevatedBtn: HTMLButtonElement = document.getElementById('runProcessElevatedBtn') as HTMLButtonElement;
+
+runProcessBtn.addEventListener('click', function(e) {
+  runProcessBtn.disabled = true;
   window.electronAPI.runProcess().then((output) => {
+    runProcessBtn.disabled = false;
     window.alert(output);
+  }).catch((error) => {
+    runProcessElevatedBtn.disabled = false;
+    window.alert(error);
   });
 });
 
-document.getElementById('runProcessElevatedBtn').addEventListener('click', function(e) {
-  console.log('runProcessElevatedBtn click');
+runProcessElevatedBtn.addEventListener('click', function(e) {
+  runProcessElevatedBtn.disabled = true;
   window.electronAPI.runProcessElevated().then((output) => {
+    runProcessElevatedBtn.disabled = false;
     window.alert(output);
+  }).catch((error) => {
+    runProcessElevatedBtn.disabled = false;
+    window.alert(error);
   });
 });
