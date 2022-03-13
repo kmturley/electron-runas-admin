@@ -1,69 +1,10 @@
-import { app, BrowserWindow } from "electron";
+import { BrowserWindow, app, ipcMain } from 'electron';
 import * as path from "path";
 
 // Import new dependencies
 import isElevated from "native-is-elevated";
 import sudoPrompt from "@vscode/sudo-prompt";
 import { exec } from "child_process";
-
-// Modified version of VSCode isAdmin() method
-// https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L480
-function isAdmin(): boolean {
-  let isAdmin: boolean;
-  if (process.platform === 'win32') {
-    isAdmin = isElevated();
-  } else {
-    isAdmin = process.getuid() === 0;
-  }
-  return isAdmin;
-}
-
-// Run a simple command without elevated priviledges
-async function runProcess(): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    exec('whoami', (error, stdout, stderr) => {
-      if (stdout) {
-        console.log("runProcess", stdout);
-      }
-      if (stderr) {
-        console.log("runProcess", stderr);
-      }
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-// Modified version of VSCode writeElevated() method 
-// https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L491
-async function runProcessElevated(): Promise<void> {
-  return new Promise<void>((resolve, reject) => {
-    sudoPrompt.exec("whoami", { name: "Electron Runas Admin" }, (error, stdout, stderr) => {
-      if (stdout) {
-        console.log("runProcessElevated", stdout);
-      }
-      if (stderr) {
-        console.log("runProcessElevated", stderr);
-      }
-      if (error) {
-        reject(error);
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-async function init() {
-  console.log("isAdmin", isAdmin());
-  await runProcess();
-  await runProcessElevated();
-}
-
-init();
 
 function createWindow() {
   // Create the browser window.
@@ -106,3 +47,58 @@ app.on("window-all-closed", () => {
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.
+
+// Modified version of VSCode isAdmin() method
+// https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L480
+ipcMain.handle('isAdmin', () => {
+  console.log('isAdmin');
+  let isAdmin: boolean;
+  if (process.platform === 'win32') {
+    isAdmin = isElevated();
+  } else {
+    isAdmin = process.getuid() === 0;
+  }
+  return isAdmin;
+});
+
+// Run a simple command without elevated privileges
+ipcMain.handle('runProcess', async () => {
+  console.log('runProcess');
+  return new Promise<string>((resolve, reject) => {
+    exec('whoami', (error, stdout, stderr) => {
+      if (stdout) {
+        console.log("runProcess", stdout);
+      }
+      if (stderr) {
+        console.log("runProcess", stderr);
+      }
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout.toString());
+      }
+    });
+  });
+});
+
+
+// Modified version of VSCode writeElevated() method 
+// https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L491
+ipcMain.handle('runProcessElevated', async () => {
+  console.log('runProcessElevated');
+  return new Promise<string>((resolve, reject) => {
+    sudoPrompt.exec("whoami", { name: "Electron Runas Admin" }, (error, stdout, stderr) => {
+      if (stdout) {
+        console.log("runProcessElevated", stdout);
+      }
+      if (stderr) {
+        console.log("runProcessElevated", stderr);
+      }
+      if (error) {
+        reject(error);
+      } else {
+        resolve(stdout.toString());
+      }
+    });
+  });
+});
