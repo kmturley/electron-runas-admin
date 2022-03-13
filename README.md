@@ -7,6 +7,16 @@ Example app showing how to elevate admin privileges for a child process using:
 * Typescript 4.x
 * `whoami` bash command
 
+## Screenshots
+
+<img src="screenshots/1-app.png?raw=true" alt="App" width="300" />
+
+<img src="screenshots/2-whoami.png?raw=true" alt="Awhoamipp" width="300" />
+
+<img src="screenshots/3-elevated-popup.png?raw=true" alt="Elevated popup" width="300" />
+
+<img src="screenshots/4-elevated-whoami.png?raw=true" alt="Elevated whoami" width="300" />
+
 
 ## whoami
 
