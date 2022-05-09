@@ -2,11 +2,16 @@
   "name": "electron-runs-admin",
   "version": "1.0.0",
   "description": "Example app showing how to elevate admin privileges for a child process",
+  "main": "main/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rimraf ./main && tsc && npm run copy",
+    "copy": "copyfiles -u 1 ./src/**/*.html ./main",
+    "dev": "npm run build && electron .",
     "watch": "tsc -w",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "start": "npm run build && electron ./dist/main.js"
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder --publish never"
   },
   "repository": "https://github.com/kmturley/electron-runs-admin",
   "keywords": [
@@ -17,13 +22,36 @@
     "demo",
     "typescript"
   ],
+  "build": {
+    "appId": "io.github.electron-runas-admin",
+    "productName": "Electron Runas Admin",
+    "artifactName": "electron-runas-admin-${os}.${ext}",
+    "asar": true,
+    "files": [
+      "main"
+    ],
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.utilities"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Utility"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  },
   "author": "GitHub",
   "license": "CC0-1.0",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
+    "copyfiles": "^2.4.1",
     "electron": "^17.2.0",
+    "electron-builder": "^23.0.3",
     "eslint": "^7.32.0",
+    "rimraf": "^3.0.2",
     "typescript": "^4.5.5"
   },
   "dependencies": {
