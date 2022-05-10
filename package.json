@@ -57,6 +57,6 @@
   "dependencies": {
     "@vscode/sudo-prompt": "^9.3.1",
     "fix-path": "^3.0.0",
-    "native-is-elevated": "^0.4.3"
+    "native-is-elevated": "^0.5.0"
   }
 }
