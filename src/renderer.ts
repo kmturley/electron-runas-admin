@@ -23,6 +23,7 @@ setupButton(document.getElementById('runProcessBtn'), window.electronAPI.runProc
 setupButton(document.getElementById('runProcessElevatedBtn'), window.electronAPI.runProcessElevated, 'whoami');
 
 window.electronAPI.getAppPath().then((appPath: string) => {
-  setupButton(document.getElementById('runProcessNodeBtn'), window.electronAPI.runProcess, `node "${appPath}/main/cli.js" --path ~/`);
-  setupButton(document.getElementById('runProcessNodeElevatedBtn'), window.electronAPI.runProcessElevated, `node "${appPath}/main/cli.js" --path ~/`);;
+  const appPathClean: string = appPath.replace('app.asar', 'app.asar.unpacked');
+  setupButton(document.getElementById('runProcessNodeBtn'), window.electronAPI.runProcess, `node "${appPathClean}/main/cli.js" --path ~/`);
+  setupButton(document.getElementById('runProcessNodeElevatedBtn'), window.electronAPI.runProcessElevated, `node "${appPathClean}/main/cli.js" --path ~/`);;
 });

@@ -26,7 +26,10 @@
     "appId": "io.github.electron-runas-admin",
     "productName": "Electron Runas Admin",
     "artifactName": "electron-runas-admin-${os}.${ext}",
-    "asar": false,
+    "asar": true,
+    "asarUnpack": [
+      "main"
+    ],
     "files": [
       "main"
     ],
