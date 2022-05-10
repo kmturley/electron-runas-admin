@@ -2,9 +2,13 @@ import { BrowserWindow, app, ipcMain } from 'electron';
 import * as path from 'path';
 
 // Import new dependencies
+import fixPath from 'fix-path';
 import isElevated from 'native-is-elevated';
 import sudoPrompt from '@vscode/sudo-prompt';
 import { exec } from 'child_process';
+
+// Ensure Electron apps subprocess on macOS and Linux inherit system $PATH
+fixPath();
 
 function createWindow() {
   // Create the browser window.
@@ -48,6 +52,11 @@ app.on('window-all-closed', () => {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
+ipcMain.handle('getAppPath', () => {
+  console.log('getAppPath');
+  return app.getAppPath();
+});
+
 // Modified version of VSCode isAdmin() method
 // https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L480
 ipcMain.handle('isAdmin', () => {
@@ -62,10 +71,10 @@ ipcMain.handle('isAdmin', () => {
 });
 
 // Run a simple command without elevated privileges
-ipcMain.handle('runProcess', async () => {
-  console.log('runProcess');
+ipcMain.handle('runProcess', async (event, command: string) => {
+  console.log('runProcess', command);
   return new Promise<string>((resolve, reject) => {
-    exec('whoami', (error, stdout, stderr) => {
+    exec(command, (error, stdout, stderr) => {
       if (stdout) {
         console.log('runProcess', stdout);
       }
@@ -84,10 +93,10 @@ ipcMain.handle('runProcess', async () => {
 
 // Modified version of VSCode writeElevated() method 
 // https://github.com/microsoft/vscode/blob/main/src/vs/platform/native/electron-main/nativeHostMainService.ts#L491
-ipcMain.handle('runProcessElevated', async () => {
-  console.log('runProcessElevated');
+ipcMain.handle('runProcessElevated', async (event, command: string) => {
+  console.log('runProcessElevated', command);
   return new Promise<string>((resolve, reject) => {
-    sudoPrompt.exec('whoami', { name: 'Electron Runas Admin' }, (error, stdout, stderr) => {
+    sudoPrompt.exec(command, { name: 'Electron Runas Admin' }, (error, stdout, stderr) => {
       if (stdout) {
         console.log('runProcessElevated', stdout);
       }

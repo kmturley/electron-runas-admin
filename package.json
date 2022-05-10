@@ -11,7 +11,7 @@
     "lint": "eslint -c .eslintrc --ext .ts ./src",
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder --publish never"
+    "dist": "npm run build && electron-builder --publish never"
   },
   "repository": "https://github.com/kmturley/electron-runs-admin",
   "keywords": [
@@ -26,7 +26,7 @@
     "appId": "io.github.electron-runas-admin",
     "productName": "Electron Runas Admin",
     "artifactName": "electron-runas-admin-${os}.${ext}",
-    "asar": true,
+    "asar": false,
     "files": [
       "main"
     ],
@@ -56,6 +56,7 @@
   },
   "dependencies": {
     "@vscode/sudo-prompt": "^9.3.1",
+    "fix-path": "^3.0.0",
     "native-is-elevated": "^0.4.3"
   }
 }
