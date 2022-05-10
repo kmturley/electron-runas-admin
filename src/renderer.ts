@@ -5,27 +5,24 @@
 // Use preload.js to selectively enable features
 // needed in the renderer process.
 
-var runProcessBtn: HTMLButtonElement = document.getElementById('runProcessBtn') as HTMLButtonElement;
-var runProcessElevatedBtn: HTMLButtonElement = document.getElementById('runProcessElevatedBtn') as HTMLButtonElement;
-
-runProcessBtn.addEventListener('click', function(e) {
-  runProcessBtn.disabled = true;
-  window.electronAPI.runProcess().then((output) => {
-    runProcessBtn.disabled = false;
-    window.alert(output);
-  }).catch((error) => {
-    runProcessElevatedBtn.disabled = false;
-    window.alert(error);
+function setupButton(btn: HTMLElement, method: Function, command: string) {
+  const btnElement = btn as HTMLButtonElement;
+  btnElement.addEventListener('click', function(e) {
+    btnElement.disabled = true;
+    method(command).then((output: any) => {
+      btnElement.disabled = false;
+      window.alert(output);
+    }).catch((error: any) => {
+      btnElement.disabled = false;
+      window.alert(error);
+    });
   });
-});
+}
 
-runProcessElevatedBtn.addEventListener('click', function(e) {
-  runProcessElevatedBtn.disabled = true;
-  window.electronAPI.runProcessElevated().then((output) => {
-    runProcessElevatedBtn.disabled = false;
-    window.alert(output);
-  }).catch((error) => {
-    runProcessElevatedBtn.disabled = false;
-    window.alert(error);
-  });
+setupButton(document.getElementById('runProcessBtn'), window.electronAPI.runProcess, 'whoami');
+setupButton(document.getElementById('runProcessElevatedBtn'), window.electronAPI.runProcessElevated, 'whoami');
+
+window.electronAPI.getAppPath().then((appPath: string) => {
+  setupButton(document.getElementById('runProcessNodeBtn'), window.electronAPI.runProcess, `node "${appPath}/main/cli.js" --path ~/`);
+  setupButton(document.getElementById('runProcessNodeElevatedBtn'), window.electronAPI.runProcessElevated, `node "${appPath}/main/cli.js" --path ~/`);;
 });
